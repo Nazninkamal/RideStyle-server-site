@@ -27,6 +27,7 @@ async function run() {
       const database = client.db("assignment12");
       const servicesCollection = database.collection("services");
       const usersCollection = database.collection("users");
+      const reviewCollection = database.collection("review");
       
       //get api
       app.get('/services', async(req, res)=>{
@@ -38,6 +39,11 @@ async function run() {
         const cursor = usersCollection.find({});
         const users = await cursor.toArray();
         res.send(users);
+      })
+      app.get('/review', async(req, res)=>{
+        const cursor = reviewCollection.find({});
+        const review = await cursor.toArray();
+        res.send(review);
       })
 
       //get single service
@@ -69,13 +75,22 @@ async function run() {
            res.json(result)
         
           }) ;
+          app.post('/review', async(req, res)=>{
+            const review = req.body;
+             console.log('hit the post api', review);
+    
+             const result = await reviewCollection.insertOne(review);
+             console.log(result);
+             res.json(result)
+          
+            }) ;
 
 
         // delete api
-        app.delete('/services/:id',async(req, res)=>{
+        app.delete('/users/:id',async(req, res)=>{
           const id = req.params.id;
           const query = {_id:ObjectId}
-          const result = await servicesCollection.deleteOne(query);
+          const result = await usersCollection.deleteOne(query);
           res.json(result);
         })
 
